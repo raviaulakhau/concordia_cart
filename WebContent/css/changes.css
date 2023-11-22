@@ -1,0 +1,165 @@
+body {
+	background-color: #4B0082; /* Purple */
+}
+
+.navbar {
+	margin-bottom: 0;
+	background-color: #4169E1; /* Royal Blue */
+	border: 0;
+	font-size: 14px !important;
+	letter-spacing: 4px;
+	opacity: 0.9;
+}
+
+.navbar li a, .navbar .navbar-brand {
+	color: #d5d5d5 !important;
+}
+
+.navbar-nav li a:hover {
+	color: #4B0082 !important; /* Purple */
+}
+
+.navbar-nav li.active a {
+	color: #ffffff !important;
+	background-color: #4169E1 !important; /* Royal Blue */
+}
+
+.navbar-default .navbar-toggle {
+	border-color: transparent;
+}
+
+.open .dropdown-toggle {
+	color: #fff;
+	background-color: #4B0082 !important; /* Purple */
+}
+
+.dropdown-menu li a {
+	color: #000 !important;
+}
+
+.dropdown-menu li a:hover {
+	background-color: #4169E1 !important; /* Royal Blue */
+}
+
+button {
+	background-color: #4169E1; /* Royal Blue */
+	color: white;
+	font-weight: bold;
+	border: 1px solid #4B0082; /* Purple */
+	padding: 7px;
+	border-radius: 5px;
+}
+
+button:hover {
+	background-color: #4B0082; /* Purple */
+	color: white;
+	border: 1px solid #4169E1; /* Royal Blue */
+	padding: 7px;
+	font-weight: bold;
+}
+
+.bg-1 {
+	background: #4169E1; /* Royal Blue */
+	color: #bdbdbd;
+}
+
+.bg-1 h3 {
+	color: #fff;
+}
+
+.bg-1 p {
+	font-style: italic;
+}
+
+.products {
+	background-color: #4B0082 !important; /* Purple */
+	padding: 20px;
+}
+
+.jumbotron {
+	background-color: #4169E1; /* Royal Blue */
+	color: #ffffff;
+}
+
+.price {
+	color: red;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.productname {
+	color: #4B0082; /* Purple */
+	font-size: 15px;
+	font-family: fantasy;
+}
+
+.productinfo {
+	color: black;
+	font-size: 12px;
+}
+
+@media only screen and (min-width: 601px) {
+	.tab {
+		border-radius: 10px;
+		background-color: #8A2BE2; /* BlueViolet */
+		font-weight: bold;
+		font-style: normal;
+		font-size: 20px;
+		margin-left: 20px;
+		margin-right: 20px;
+		padding-top: 20px;
+		padding-bottom: 15px;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.tab {
+		border-radius: 10px;
+		background-color: #8A2BE2; /* BlueViolet */
+		font-weight: bold;
+		font-style: normal;
+		font-size: 20px;
+		margin-left: 2%;
+		margin-right: 2%;
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
+}
+
+*.icon-blue {
+	color: #4169E1; /* Royal Blue */
+}
+
+*.icon-grey {
+	color: grey;
+}
+
+i {
+	width: 70px;
+	height: 50px;
+	text-align: center;
+	vertical-align: middle;
+	position: relative;
+}
+
+.badge:after {
+	content: attr(data-count);
+	position: absolute;
+	background: #ff6600;
+	height: 2rem;
+	top: 0.15rem;
+	right: 0.15rem;
+	width: 2rem;
+	text-align: center;
+	line-height: 2rem;
+	font-size: 1rem;
+	border-radius: 50%;
+	color: white;
+	border: 1px solid #ff6600;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+i.fa::before {
+	font-size: 3rem !important;
+}
