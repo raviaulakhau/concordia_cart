@@ -60,7 +60,7 @@
 		message = "Showing Results for '" + type + "'";
 	} else if (sort != null) {
 		products = prodDao.getAllProducts(sort);
-	}else {
+	} else {
 		products = prodDao.getAllProducts();
 	}
 	if (products.isEmpty()) {
@@ -84,6 +84,10 @@
 			<button class="btn" style="background-color: #0000FF; color: white;"
 				onclick="window.location.href='adminViewProduct.jsp?sort=desc'">Sort
 				Price Desc</button>
+			<button class="btn" style="background-color: #008000; color: white;"
+				onclick="window.location.href='index.jsp?used=1'">Show Used
+				Products</button>
+
 		</div>
 	</div>
 	<!-- Start of Product Items List -->

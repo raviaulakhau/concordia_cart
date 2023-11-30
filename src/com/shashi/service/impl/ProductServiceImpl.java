@@ -19,11 +19,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-			InputStream prodImage,double pRating) {
+			InputStream prodImage,double pRating,int used,double discount) {
 		String status = null;
 		String prodId = IDUtil.generateId();
 
-		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage,pRating);
+		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage,pRating,used,discount);
 
 		status = addProduct(product);
 
@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps = null;
 
 		try {
-			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?);");
+			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, product.getProdId());
 			ps.setString(2, product.getProdName());
 			ps.setString(3, product.getProdType());
@@ -51,6 +51,8 @@ public class ProductServiceImpl implements ProductService {
 			ps.setInt(6, product.getProdQuantity());
 			ps.setBlob(7, product.getProdImage());
 			ps.setDouble(8, product.getRating());
+			ps.setInt(9, product.getUsed());
+			ps.setDouble(10, product.getDiscount());
 			int k = ps.executeUpdate();
 
 			if (k > 0) {
@@ -128,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
 
 		try {
 			ps = con.prepareStatement(
-					"update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=?,image=?,prating=? where pid=?");
+					"update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=?,image=?,prating=?,used=?, discount? where pid=?");
 
 			ps.setString(1, updatedProduct.getProdName());
 			ps.setString(2, updatedProduct.getProdType());
@@ -138,6 +140,9 @@ public class ProductServiceImpl implements ProductService {
 			ps.setBlob(6, updatedProduct.getProdImage());
 			ps.setString(7, prevProduct.getProdId());
 			ps.setDouble(8, updatedProduct.getRating());
+			ps.setInt(9, updatedProduct.getUsed());
+			ps.setDouble(10, updatedProduct.getDiscount());
+			
 
 			int k = ps.executeUpdate();
 
@@ -183,6 +188,33 @@ public class ProductServiceImpl implements ProductService {
 
 		return status;
 	}
+	public String updateProductDiscount(String prodId, double discount) {
+		String status = "Price Updation Failed!";
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+
+		try {
+			ps = con.prepareStatement("update product set discount=? where pid=?");
+
+			ps.setDouble(1, discount);
+			ps.setString(2, prodId);
+
+			int k = ps.executeUpdate();
+
+			if (k > 0)
+				status = "Price Updated Successfully!";
+		} catch (SQLException e) {
+			status = "Error: " + e.getMessage();
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+
+		return status;
+	}
 
 	
 	public List<ProductBean> getAllProducts() {
@@ -210,6 +242,9 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setRating(rs.getDouble(8));
+				product.setUsed(rs.getInt(9));
+				product.setDiscount(rs.getDouble(10));
+				
 
 				products.add(product);
 
@@ -255,6 +290,8 @@ public class ProductServiceImpl implements ProductService {
                 product.setProdQuantity(rs.getInt(6));
                 product.setProdImage(rs.getAsciiStream(7));
                 product.setRating(rs.getDouble(8));
+                product.setUsed(rs.getInt(9));
+                product.setDiscount(rs.getDouble(10));
                 
 
                 products.add(product);
@@ -270,47 +307,51 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
-	@Override
-	public List<ProductBean> getAllProductsByType(String type) {
-		List<ProductBean> products = new ArrayList<ProductBean>();
+	public List<ProductBean> getAllUsedProducts() 
+	{
+	    List<ProductBean> products = new ArrayList<ProductBean>();
 
-		Connection con = DBUtil.provideConnection();
+	    Connection con = DBUtil.provideConnection();
 
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
 
-		try {
-			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where lower(ptype) like ?;");
-			ps.setString(1, "%" + type + "%");
-			rs = ps.executeQuery();
+	    try {
+	        // SQL query to select all products marked as used
+	        String sql = "SELECT * FROM `shopping-cart`.product WHERE pused = 1;";
+	        ps = con.prepareStatement(sql);
+	        rs = ps.executeQuery();
 
-			while (rs.next()) {
+	        while (rs.next()) {
+	            ProductBean product = new ProductBean();
 
-				ProductBean product = new ProductBean();
+	            product.setProdId(rs.getString(1));
+	            product.setProdName(rs.getString(2));
+	            product.setProdType(rs.getString(3));
+	            product.setProdInfo(rs.getString(4));
+	            product.setProdPrice(rs.getDouble(5));
+	            product.setProdQuantity(rs.getInt(6));
+	            product.setProdImage(rs.getAsciiStream(7));
+	            product.setRating(rs.getDouble(8));
+	            product.setUsed(rs.getInt(9));
+	            product.setDiscount(rs.getDouble(10));
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setRating(rs.getDouble(8));
+	            products.add(product);
+	        }
 
-				products.add(product);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        // Ensure resources are closed in the finally block
+	        DBUtil.closeConnection(rs);
+	        DBUtil.closeConnection(ps);
+	        DBUtil.closeConnection(con);
+	    }
 
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		DBUtil.closeConnection(con);
-		DBUtil.closeConnection(ps);
-		DBUtil.closeConnection(rs);
-
-		return products;
+	    return products;
 	}
+
+
 
 	@Override
 	public List<ProductBean> searchAllProducts(String search) {
@@ -342,6 +383,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setRating(rs.getDouble(8));
+				product.setUsed(rs.getInt(9));
+				product.setDiscount(rs.getDouble(10));
 
 				products.add(product);
 
@@ -414,6 +457,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setRating(rs.getDouble(8));
+				product.setUsed(rs.getInt(9));
+				product.setDiscount(rs.getDouble(10));
 			}
 
 		} catch (SQLException e) {
@@ -605,7 +650,7 @@ public class ProductServiceImpl implements ProductService {
 
 	    try {
 	        ps = con.prepareStatement("select * from product where pquantity < ?");
-	        ps.setInt(1, 3);  // Setting the quantity parameter to 3
+	        ps.setInt(1, 3); 
 
 	        rs = ps.executeQuery();
 
@@ -621,6 +666,8 @@ public class ProductServiceImpl implements ProductService {
 	            product.setProdQuantity(rs.getInt(6));
 	            product.setProdImage(rs.getAsciiStream(7));
 	            product.setRating(rs.getDouble(8));
+	            product.setUsed(rs.getInt(9));
+	            product.setDiscount(rs.getDouble(10));
 
 	            lowQuantityProducts.add(product);
 	        }
@@ -635,6 +682,94 @@ public class ProductServiceImpl implements ProductService {
 
 	    return lowQuantityProducts;
 	}
+	public List<ProductBean> getAllProductsByType(String type) {
+		List<ProductBean> products = new ArrayList<ProductBean>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where lower(ptype) like ?;");
+			ps.setString(1, "%" + type + "%");
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+
+				products.add(product);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return products;
+	}
+
+	@Override
+	public List<ProductBean> getAllProductsOnSale() {
+	    List<ProductBean> productsOnSale = new ArrayList<>();
+
+	    Connection con = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+
+	    try {
+	        con = DBUtil.provideConnection();
+
+	        // SQL query to select products with a discount
+	        String sql = "SELECT * FROM products WHERE discount > 0"; // Replace 'products' with your actual table name
+	        ps = con.prepareStatement(sql);
+	        rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            ProductBean product = new ProductBean();
+
+	            // Setting the attributes from the result set
+	            product.setProdId(rs.getString("pid"));
+	            product.setProdName(rs.getString("pname"));
+	            product.setProdType(rs.getString("ptype"));
+	            product.setProdInfo(rs.getString("pinfo"));
+	            product.setProdPrice(rs.getDouble("pprice"));
+	            product.setProdQuantity(rs.getInt("pquantity"));
+	   
+	            product.setRating(rs.getDouble("prating"));
+	            product.setUsed(rs.getInt("pused"));
+	            product.setDiscount(rs.getDouble("discount"));
+
+	            productsOnSale.add(product);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        DBUtil.closeConnection(rs);
+	        DBUtil.closeConnection(ps);
+	        DBUtil.closeConnection(con);
+	    }
+
+	    return productsOnSale;
+	}
+
+
+
+
 
 
 	

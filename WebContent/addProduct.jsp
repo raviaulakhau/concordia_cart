@@ -99,6 +99,11 @@
 							placeholder="Select Image" name="image" class="form-control"
 							id="last_name" required>
 					</div>
+					<div class="col-md-6 form-group">
+						<label for="used">USED</label> <input type="text"
+							placeholder="is this product used ? select 1 for used" name="used" class="form-control"
+							id="last_name" required>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-6 text-center" style="margin-bottom: 2px;">

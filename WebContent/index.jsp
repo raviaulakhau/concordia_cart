@@ -14,7 +14,6 @@
         .thumbnail {
             animation: fadeIn 1s;
         }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -28,7 +27,6 @@
 <body style="background-color: #D8BFD8;">
 
 <%
-    /* Checking the user credentials */
     String userName = (String) session.getAttribute("username");
     String password = (String) session.getAttribute("password");
     String userType = (String) session.getAttribute("usertype");
@@ -44,9 +42,13 @@
     String search = request.getParameter("search");
     String type = request.getParameter("type");
     String sort = request.getParameter("sort");
+    String usedParam = request.getParameter("used");
 
     String message = "All Products";
-    if (search != null) {
+    if ("1".equals(usedParam)) {
+        products = prodDao.getAllUsedProducts(); // Ensure this method is implemented in your service
+        message = "Showing All Used Products";
+    } else if (search != null) {
         products = prodDao.searchAllProducts(search);
         message = "Showing Results for '" + search + "'";
     } else if (type != null) {
@@ -73,6 +75,7 @@
     <div class="pull-right" style="margin-bottom: 20px;">
         <button class="btn" style="background-color: #0000FF; color: white;" onclick="window.location.href='index.jsp?sort=asc'">Sort Price Asc</button>
         <button class="btn" style="background-color: #0000FF; color: white;" onclick="window.location.href='index.jsp?sort=desc'">Sort Price Desc</button>
+        <button class="btn" style="background-color: #008000; color: white;" onclick="window.location.href='index.jsp?used=1'">Show Used Products</button>
     </div>
 </div>
 

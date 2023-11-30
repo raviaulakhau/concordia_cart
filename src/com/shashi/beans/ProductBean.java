@@ -17,9 +17,19 @@ public class ProductBean implements Serializable {
 	private int prodQuantity;
 	private InputStream prodImage;
 	private double rating;
+	private int used;
+	private double discount;
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
 
 	public ProductBean(String prodId, String prodName, String prodType, String prodInfo, double prodPrice,
-			int prodQuantity, InputStream prodImage,double pRating) {
+			int prodQuantity, InputStream prodImage,double pRating,int used , double discount) {
 		super();
 		this.prodId = prodId;
 		this.prodName = prodName;
@@ -29,6 +39,8 @@ public class ProductBean implements Serializable {
 		this.prodQuantity = prodQuantity;
 		this.prodImage = prodImage;
 		this.rating = pRating <= 5? pRating : 5;
+		this.setUsed(used);
+		this.setDiscount(discount);
 	}
 
 	public String getProdId() {
@@ -93,6 +105,14 @@ public class ProductBean implements Serializable {
 
 	public void setRating(double rating) {
 		this.rating = rating;
+	}
+
+	public int getUsed() {
+		return used;
+	}
+
+	public void setUsed(int used) {
+		this.used = used;
 	}
 
 }

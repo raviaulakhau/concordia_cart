@@ -48,6 +48,9 @@ public class AddProductSrv extends HttpServlet {
 		String prodInfo = request.getParameter("info");
 		double prodPrice = Double.parseDouble(request.getParameter("price"));
 		int prodQuantity = Integer.parseInt(request.getParameter("quantity"));
+		int used = Integer.parseInt(request.getParameter("used"));
+		double discount = Double.parseDouble(request.getParameter("discount"));
+		used = used == 1 || used == 0 ? used : 0;
 		double pRating = 5.0;
 
 		Part part = request.getPart("image");
@@ -58,7 +61,7 @@ public class AddProductSrv extends HttpServlet {
 
 		ProductServiceImpl product = new ProductServiceImpl();
 
-		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage,pRating);
+		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage,pRating,used,discount);
 
 		RequestDispatcher rd = request.getRequestDispatcher("addProduct.jsp?message=" + status);
 		rd.forward(request, response);
