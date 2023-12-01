@@ -55,6 +55,26 @@
 
 	products = DiscountServiceImpl.getAllProductsSortedByTotalNumberOfSales();
 	
+	if ("discount".equals(type) || DiscountServiceImpl.madeOrders(userName)) 
+	{
+		products = prodDao.getAllProductsOnSale();
+		message = "Showing Results for 'discounts'";
+	} else if ("1".equals(usedParam)) {
+		products = prodDao.getAllUsedProducts(); 
+		message = "Showing All Used Products";
+	} else if (search != null) {
+		products = prodDao.searchAllProducts(search);
+		message = "Showing Results for '" + search + "'";
+	} else if (type != null) {
+		products = prodDao.getAllProductsByType(type);
+		message = "Showing Results for '" + type + "'";
+	} else {
+		products = prodDao.getAllProducts();
+	}
+	if (products.isEmpty()) {
+		message = "No items found for the search '" + (search != null ? search : type) + "'";
+		products = prodDao.getAllProducts();
+	}
 	
 	%>
 
