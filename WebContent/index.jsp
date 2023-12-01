@@ -125,23 +125,14 @@ to {
 					%>
 					<p class="price">Out of Stock</p>
 					<%
-					} else if (product.getDiscount() == 0.0) {
+					} else {
 					%>
 					<p class="price" style="font-size: 25px;">
 						Rs
 						<%=product.getProdPrice()%></p>
 					<%
-					} else {
+					} 
 					%>
-					<p class="price" style="margin: 0; text-decoration: line-through;">
-						Rs
-						<%=product.getProdPrice()%></p>
-					<p class="discounted-price"
-						style="margin: 0; color: red; font-weight: bold; font-size: 25px;">
-						Rs
-						<%=(100 - product.getDiscount()) * product.getProdPrice() / 100%>
-					</p>
-					<% } %>
 					<p class="rating">
 						Rating
 						<%=product.getRating()%></p>
