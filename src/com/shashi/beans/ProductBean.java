@@ -20,14 +20,6 @@ public class ProductBean implements Serializable {
 	private int used;
 	private double discount;
 
-	public double getDiscount() {
-		return discount;
-	}
-
-	public void setDiscount(double discount) {
-		this.discount = discount;
-	}
-
 	public ProductBean(String prodId, String prodName, String prodType, String prodInfo, double prodPrice,
 			int prodQuantity, InputStream prodImage,double pRating,int used , double discount) {
 		super();
@@ -113,6 +105,14 @@ public class ProductBean implements Serializable {
 
 	public void setUsed(int used) {
 		this.used = used;
+	}
+	
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
 	}
 
 }

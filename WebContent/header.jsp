@@ -128,8 +128,7 @@
 						
 							<!-- TODO: userHome to redirect to APPROPRIATE DISCOUNT AND USED PROD TAB -->
 							
-							<li><a href="userHome.jsp?type=tablet">Discounts</a></li>
-						    <li><a href="userHome.jsp?type=tablet">Used Products</a></li>
+							<li><a href="userHome.jsp?type=discount">Discounts</a></li>
 							
 							
 						</ul></li>
@@ -187,10 +186,7 @@
 							<li><a href="adminViewProduct.jsp?type=speaker">Speakers</a></li>
 							<li><a href="adminViewProduct.jsp?type=tablet">Tablets</a></li>
 							
-					<!-- TODO: adminViewProduct to redirect to APPROPRIATE DISCOUNT AND USED PROD TAB -->
-							
-					        <li><a href="adminViewProduct.jsp?type=tablet">Discounts</a></li>
-							<li><a href="adminViewProduct.jsp?type=tablet">Used Products</a></li>
+							<li><a href="adminViewProduct.jsp?type=discount">Discounts</a></li>
 							
 						</ul></li>
 						<% ProductServiceImpl prodDao = new ProductServiceImpl();

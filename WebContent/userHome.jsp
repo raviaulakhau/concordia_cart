@@ -34,9 +34,16 @@
 	String search = request.getParameter("search");
 	String type = request.getParameter("type");
 	String sort = request.getParameter("sort");
-
+	String usedParam = request.getParameter("used");
 	String message = "All Products";
-	if (search != null) {
+	
+	if ("discount".equals(type) && DiscountServiceImpl.madeOrders(userName) ) {
+		products = prodDao.getAllProductsOnSale();
+		message = "Showing Results for 'discounts'";
+	} else if ("1".equals(usedParam)) {
+		products = prodDao.getAllUsedProducts(); // Ensure this method is implemented in your service
+		message = "Showing All Used Products";
+	} else if (search != null) {
 		products = prodDao.searchAllProducts(search);
 		message = "Showing Results for '" + search + "'";
 	} else if (type != null) {
@@ -75,8 +82,9 @@
 				onclick="window.location.href='userHome.jsp?sort=desc'">Sort
 				Price Desc</button>
 			<button class="btn" style="background-color: #008000; color: white;"
-				onclick="window.location.href='index.jsp?used=1'">Show Used
-				Products</button>
+				onclick="window.location.href='userHome.jsp?used=1'">Show
+				Used Products</button>
+
 		</div>
 	</div>
 	<!-- Start of Product Items List -->
@@ -89,6 +97,14 @@
 			%>
 			<div class="col-sm-4" style='height: 350px;'>
 				<div class="thumbnail">
+				<%
+					if (product.getUsed() == 1) {
+					%>
+					<p class="used-tag"
+						style="width: 100px; background-color: blue; color: white; z-index: 1; position: absolute; top: 0px;">Used</p>
+					<%
+					}
+					%>
 					<img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product"
 						style="height: 150px; max-width: 180px">
 					<p class="productname"><%=product.getProdName()%>
@@ -104,11 +120,22 @@
 					%>
 					<p class="price">Out of Stock</p>
 					<%
-					} else {
+					} else if (product.getDiscount() == 0.0 || !DiscountServiceImpl.madeOrders(userName)) {
 					%>
-					<p class="price">
+					<p class="price" style="font-size: 20px;">
 						Rs
 						<%=product.getProdPrice()%></p>
+					<%
+					} else {
+					%>
+					<p class="price" style="margin: 0; text-decoration: line-through;">
+						Rs
+						<%=product.getProdPrice()%></p>
+					<p class="discounted-price"
+						style="margin: 0; color: red; font-weight: bold;">
+						Rs
+						<%=Math.min((100 - DiscountServiceImpl.suggestDiscountBasedOnCart(userName))* product.getProdPrice()/100,((100 - DiscountServiceImpl.suggestDiscountBasedOnSpending(userName))* product.getProdPrice()/100)) %>
+					</p>
 					<%
 					}
 					%>

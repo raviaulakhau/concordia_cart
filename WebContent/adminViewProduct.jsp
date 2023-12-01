@@ -49,44 +49,43 @@
 
 	String search = request.getParameter("search");
 	String type = request.getParameter("type");
-	String sort = request.getParameter("sort");
+	String usedParam = request.getParameter("used");
 
-	String message = "All Products";
-	if (search != null) {
+	String message = "Most Selling to Least Selling Products";
+
+	products = DiscountServiceImpl.getAllProductsSortedByTotalNumberOfSales();
+	
+	if ("discount".equals(type)) {
+		products = prodDao.getAllProductsOnSale();
+		message = "Showing Results for 'discounts'";
+	} else if ("1".equals(usedParam)) {
+		products = prodDao.getAllUsedProducts(); // Ensure this method is implemented in your service
+		message = "Showing All Used Products";
+	} else if (search != null) {
 		products = prodDao.searchAllProducts(search);
 		message = "Showing Results for '" + search + "'";
 	} else if (type != null) {
 		products = prodDao.getAllProductsByType(type);
 		message = "Showing Results for '" + type + "'";
-	} else if (sort != null) {
-		products = prodDao.getAllProducts(sort);
 	} else {
 		products = prodDao.getAllProducts();
 	}
 	if (products.isEmpty()) {
 		message = "No items found for the search '" + (search != null ? search : type) + "'";
-		products = prodDao.getAllProducts();
+		products = DiscountServiceImpl.getAllProductsSortedByTotalNumberOfSales();
 	}
 	%>
-
 
 	<jsp:include page="header.jsp" />
 
 
-
 	<div class="text-center"
-		style="color: black; font-size: 14px; font-weight: bold;"><%=message%></div>
+		style="color: black; font-size: 19px; font-weight: bold;"><%=message%></div>
 	<div class="container">
 		<div class="pull-right" style="margin-bottom: 20px;">
-			<button class="btn" style="background-color: #0000FF; color: white;"
-				onclick="window.location.href='adminViewProduct.jsp?sort=asc'">Sort
-				Price Asc</button>
-			<button class="btn" style="background-color: #0000FF; color: white;"
-				onclick="window.location.href='adminViewProduct.jsp?sort=desc'">Sort
-				Price Desc</button>
 			<button class="btn" style="background-color: #008000; color: white;"
-				onclick="window.location.href='index.jsp?used=1'">Show Used
-				Products</button>
+				onclick="window.location.href='adminViewProduct.jsp?used=1'">Show
+				Used Products</button>
 
 		</div>
 	</div>
@@ -99,6 +98,22 @@
 			%>
 			<div class="col-sm-4" style='height: 350px;'>
 				<div class="thumbnail">
+					<%
+					if (product.getUsed() == 1) {
+					%>
+					<p class="used-tag"
+						style="width: 100px; background-color: blue; color: white; z-index: 1; position: absolute; top: 0px;">Used</p>
+					<%
+					}
+					%>
+					<%
+					if (product.getDiscount() > 0) {
+					%>
+					<p class="used-tag"
+						style="width: 100px; background-color: green; color: black; z-index: 1; position: absolute; top: 25px;">Discounted</p>
+					<%
+					}
+					%>
 					<img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product"
 						style="height: 150px; max-width: 180px;">
 					<p class="productname"><%=product.getProdName()%>
@@ -107,10 +122,27 @@
 						)
 					</p>
 					<p class="productinfo"><%=product.getProdInfo()%></p>
-					<p class="price">
+					<%
+					if (product.getProdQuantity() == 0) {
+					%>
+					<p class="price">Out of Stock</p>
+					<%
+					} else if (product.getDiscount() == 0.0) {
+					%>
+					<p class="price" style="font-size: 20px;">
 						Rs
-						<%=product.getProdPrice()%>
+						<%=product.getProdPrice()%></p>
+					<%
+					} else {
+					%>
+					<p class="discounted-price"
+						style="color: red; font-weight: bold; font-size: 20px;">
+						Rs
+						<%=(100 - product.getDiscount()) * product.getProdPrice() / 100%>
 					</p>
+					<%
+					}
+					%>
 					<form method="post">
 						<button type="submit"
 							formaction="./RemoveProductSrv?prodid=<%=product.getProdId()%>"

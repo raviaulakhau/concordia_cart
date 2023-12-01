@@ -52,6 +52,8 @@ public class UpdateProductSrv extends HttpServlet {
 		String prodInfo = request.getParameter("info");
 		Double prodPrice = Double.parseDouble(request.getParameter("price"));
 		Integer prodQuantity = Integer.parseInt(request.getParameter("quantity"));
+		String prodUsed = request.getParameter("used");
+		Double prodDiscount = Double.parseDouble(request.getParameter("discount"));
 
 		ProductBean product = new ProductBean();
 		product.setProdId(prodId);
@@ -60,6 +62,13 @@ public class UpdateProductSrv extends HttpServlet {
 		product.setProdPrice(prodPrice);
 		product.setProdQuantity(prodQuantity);
 		product.setProdType(prodType);
+		product.setDiscount(prodDiscount);
+		
+		if (prodUsed.equalsIgnoreCase("yes")) {
+			product.setUsed(1);
+		} else {
+			product.setUsed(0);
+		}
 
 		ProductServiceImpl dao = new ProductServiceImpl();
 

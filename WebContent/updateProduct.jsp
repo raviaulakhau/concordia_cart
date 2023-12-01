@@ -117,6 +117,24 @@
 							id="last_name" name="quantity" required>
 					</div>
 				</div>
+				
+				<!-- used product and discount info -->
+				<div class="row">
+					<div class="col-md-6 form-group">
+						<label for="last_name">Is the product a used one?</label> <select name="used"
+							id="producttype" class="form-control" required>
+							<option value="yes">Yes</option>
+							<option value="yes">No</option>
+							
+						</select>
+					</div>
+					<div class="col-md-6 form-group">
+						<label for="last_name">Discount (%)</label> <input type="number"
+							value="<%=product.getDiscount()%>"
+							placeholder="Enter Discount" class="form-control"
+						   name="discount" required>
+					</div>
+				</div>
 				<div class="row text-center">
 					<div class="col-md-4" style="margin-bottom: 2px;">
 						<button formaction="adminViewProduct.jsp" class="btn btn-danger">Cancel</button>

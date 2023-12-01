@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.shashi.beans.DemandBean;
 import com.shashi.beans.ProductBean;
@@ -734,7 +736,7 @@ public class ProductServiceImpl implements ProductService {
 	        con = DBUtil.provideConnection();
 
 	        // SQL query to select products with a discount
-	        String sql = "SELECT * FROM products WHERE discount > 0"; // Replace 'products' with your actual table name
+	        String sql = "SELECT * FROM `shopping-cart`.product WHERE discount > 0"; // Replace 'products' with your actual table name
 	        ps = con.prepareStatement(sql);
 	        rs = ps.executeQuery();
 
@@ -766,12 +768,5 @@ public class ProductServiceImpl implements ProductService {
 
 	    return productsOnSale;
 	}
-
-
-
-
-
-
-	
 
 }
