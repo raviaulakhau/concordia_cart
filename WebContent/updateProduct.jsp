@@ -124,7 +124,7 @@
 						<label for="last_name">Is the product a used one?</label> <select name="used"
 							id="producttype" class="form-control" required>
 							<option value="yes">Yes</option>
-							<option value="yes">No</option>
+							<option value="no">No</option>
 							
 						</select>
 					</div>

@@ -132,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
 
 		try {
 			ps = con.prepareStatement(
-					"update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=?,image=?,prating=?,used=?, discount? where pid=?");
+					"update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=?,image=?,prating=?,used=?,discount=? where pid=?");
 
 			ps.setString(1, updatedProduct.getProdName());
 			ps.setString(2, updatedProduct.getProdType());
@@ -140,10 +140,10 @@ public class ProductServiceImpl implements ProductService {
 			ps.setDouble(4, updatedProduct.getProdPrice());
 			ps.setInt(5, updatedProduct.getProdQuantity());
 			ps.setBlob(6, updatedProduct.getProdImage());
-			ps.setString(7, prevProduct.getProdId());
-			ps.setDouble(8, updatedProduct.getRating());
-			ps.setInt(9, updatedProduct.getUsed());
-			ps.setDouble(10, updatedProduct.getDiscount());
+			ps.setString(10, prevProduct.getProdId());
+			ps.setDouble(7, updatedProduct.getRating());
+			ps.setInt(8, updatedProduct.getUsed());
+			ps.setDouble(9, updatedProduct.getDiscount());
 			
 
 			int k = ps.executeUpdate();
@@ -491,14 +491,16 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps = null;
 
 		try {
-			ps = con.prepareStatement("update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=? where pid=?");
+			ps = con.prepareStatement("update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=?,pused=?,discount=? where pid=?");
 
 			ps.setString(1, updatedProduct.getProdName());
 			ps.setString(2, updatedProduct.getProdType());
 			ps.setString(3, updatedProduct.getProdInfo());
 			ps.setDouble(4, updatedProduct.getProdPrice());
 			ps.setInt(5, updatedProduct.getProdQuantity());
-			ps.setString(6, prevProductId);
+			ps.setInt(6, updatedProduct.getUsed());
+			ps.setDouble(7, updatedProduct.getDiscount());
+			ps.setString(8, prevProductId);
 
 			int k = ps.executeUpdate();
 			// System.out.println("prevQuantity: "+prevQuantity);
