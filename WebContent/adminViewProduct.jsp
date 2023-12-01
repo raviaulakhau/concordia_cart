@@ -55,25 +55,7 @@
 
 	products = DiscountServiceImpl.getAllProductsSortedByTotalNumberOfSales();
 	
-	if ("discount".equals(type)) {
-		products = prodDao.getAllProductsOnSale();
-		message = "Showing Results for 'discounts'";
-	} else if ("1".equals(usedParam)) {
-		products = prodDao.getAllUsedProducts(); // Ensure this method is implemented in your service
-		message = "Showing All Used Products";
-	} else if (search != null) {
-		products = prodDao.searchAllProducts(search);
-		message = "Showing Results for '" + search + "'";
-	} else if (type != null) {
-		products = prodDao.getAllProductsByType(type);
-		message = "Showing Results for '" + type + "'";
-	} else {
-		products = prodDao.getAllProducts();
-	}
-	if (products.isEmpty()) {
-		message = "No items found for the search '" + (search != null ? search : type) + "'";
-		products = DiscountServiceImpl.getAllProductsSortedByTotalNumberOfSales();
-	}
+	
 	%>
 
 	<jsp:include page="header.jsp" />

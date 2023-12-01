@@ -154,9 +154,9 @@ public class DiscountServiceImpl {
 		if (totalQuantitySold <= 5) { // Least selling
 			discount = 20.0; // Higher discount
 		} else if (totalQuantitySold > 50) { // Best selling
-			discount = 5.0; // Lower discount
+			discount = 2.0; // Lower discount
 		} else {
-			discount = 2.0; // Standard discount
+			discount = 5.0; // Standard discount
 		}
 
 		return discount;

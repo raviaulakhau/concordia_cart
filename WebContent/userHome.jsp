@@ -37,11 +37,12 @@
 	String usedParam = request.getParameter("used");
 	String message = "All Products";
 	
-	if ("discount".equals(type) && DiscountServiceImpl.madeOrders(userName) ) {
+	if ("discount".equals(type) || DiscountServiceImpl.madeOrders(userName)) 
+	{
 		products = prodDao.getAllProductsOnSale();
 		message = "Showing Results for 'discounts'";
 	} else if ("1".equals(usedParam)) {
-		products = prodDao.getAllUsedProducts(); // Ensure this method is implemented in your service
+		products = prodDao.getAllUsedProducts(); 
 		message = "Showing All Used Products";
 	} else if (search != null) {
 		products = prodDao.searchAllProducts(search);
@@ -91,89 +92,62 @@
 	<div class="container">
 		<div class="row text-center">
 
-			<%
-			for (ProductBean product : products) {
-				int cartQty = new CartServiceImpl().getCartItemCount(userName, product.getProdId());
-			%>
-			<div class="col-sm-4" style='height: 350px;'>
-				<div class="thumbnail">
-				<%
-					if (product.getUsed() == 1) {
-					%>
-					<p class="used-tag"
-						style="width: 100px; background-color: blue; color: white; z-index: 1; position: absolute; top: 0px;">Used</p>
-					<%
-					}
-					%>
-					<img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product"
-						style="height: 150px; max-width: 180px">
-					<p class="productname"><%=product.getProdName()%>
-					</p>
-					<%
-					String description = product.getProdInfo();
-					description = description.substring(0, Math.min(description.length(), 100));
-					%>
-					<p class="productinfo"><%=description%>..
-					</p>
-					<%
-					if (product.getProdQuantity() == 0) {
-					%>
-					<p class="price">Out of Stock</p>
-					<%
-					} else if (product.getDiscount() == 0.0 || !DiscountServiceImpl.madeOrders(userName)) {
-					%>
-					<p class="price" style="font-size: 20px;">
-						Rs
-						<%=product.getProdPrice()%></p>
-					<%
-					} else {
-					%>
-					<p class="price" style="margin: 0; text-decoration: line-through;">
-						Rs
-						<%=product.getProdPrice()%></p>
-					<p class="discounted-price"
-						style="margin: 0; color: red; font-weight: bold;">
-						Rs
-						<%=Math.min((100 - DiscountServiceImpl.suggestDiscountBasedOnCart(userName))* product.getProdPrice()/100,((100 - DiscountServiceImpl.suggestDiscountBasedOnSpending(userName))* product.getProdPrice()/100)) %>
-					</p>
-					<%
-					}
-					%>
-					<p class="rating">
-						rating
-						<%=product.getRating()%>
-					</p>
-					<form method="post">
-						<%
-						if (cartQty == 0) {
-						%>
-						<button type="submit"
-							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1"
-							class="btn btn-success">Add to Cart</button>
-						&nbsp;&nbsp;&nbsp;
-						<button type="submit"
-							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1"
-							class="btn btn-primary">Buy Now</button>
-						<%
-						} else {
-						%>
-						<button type="submit"
-							formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=0"
-							class="btn btn-danger">Remove From Cart</button>
-						&nbsp;&nbsp;&nbsp;
-						<button type="submit" formaction="cartDetails.jsp"
-							class="btn btn-success">Checkout</button>
-						<%
-						}
-						%>
-					</form>
-					<br />
-				</div>
-			</div>
+<%
+for (ProductBean product : products) {
+    int cartQty = new CartServiceImpl().getCartItemCount(userName, product.getProdId());
+%>
+<div class="col-sm-4" style='height: 350px;'>
+    <div class="thumbnail">
+        <% if (product.getUsed() == 1) { %>
+            <p class="used-tag" style="width: 100px; background-color: blue; color: white; z-index: 1; position: absolute; top: 0px;">Used</p>
+        <% } %>
+        <% if (product.getDiscount() > 0.0) { %>
+            <p class="discount-tag" style="width: 100px; background-color: green; color: white; z-index: 1; position: absolute; top: 20px;">Discount</p>
+        <% } %>
+        <img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product" style="height: 150px; max-width: 180px">
+        <p class="productname"><%=product.getProdName()%></p>
+        
+        <% String description = product.getProdInfo();
+           description = description.substring(0, Math.min(description.length(), 100));
+        %>
+        <p class="productinfo"><%=description%>..</p>
 
-			<%
-			}
-			%>
+        <% if (product.getProdQuantity() == 0) { %>
+            <p class="price">Out of Stock</p>
+        <% } else { %>
+            <% if (product.getDiscount() > 0.0) { %>
+                <p class="price" style="margin: 0; text-decoration: line-through;">
+                    Rs <%=product.getProdPrice()%>
+                </p>
+                <p class="discounted-price" style="margin: 0; color: red; font-weight: bold;">
+                    Rs <%=Math.min((100 - DiscountServiceImpl.suggestDiscountBasedOnCart(userName)) * product.getProdPrice()/100, ((100 - DiscountServiceImpl.suggestDiscountBasedOnSpending(userName)) * product.getProdPrice()/100)) %>
+                </p>
+            <% } else { %>
+                <p class="price" style="font-size: 20px;">Rs <%=product.getProdPrice()%></p>
+            <% } %>
+        <% } %>
+
+        <p class="rating">rating <%=product.getRating()%></p>
+
+        <form method="post">
+            <% if (cartQty == 0) { %>
+                <button type="submit" formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1" class="btn btn-success">Add to Cart</button>
+                &nbsp;&nbsp;&nbsp;
+                <button type="submit" formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=1" class="btn btn-primary">Buy Now</button>
+            <% } else { %>
+                <button type="submit" formaction="./AddtoCart?uid=<%=userName%>&pid=<%=product.getProdId()%>&pqty=0" class="btn btn-danger">Remove From Cart</button>
+                &nbsp;&nbsp;&nbsp;
+                <button type="submit" formaction="cartDetails.jsp" class="btn btn-success">Checkout</button>
+            <% } %>
+        </form>
+        <br />
+    </div>
+</div>
+<%
+}
+%>
+
+			
 
 		</div>
 	</div>
